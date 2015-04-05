@@ -1,121 +1,113 @@
- The structure of a relational schema is represented in Python    |
-| using MetaData, Table, and other objects.                        |
-+------------------------------------------------------ (1 / 20) --+
+# Notas
 
->>> from sqlalchemy import MetaData
->>> from sqlalchemy import Table, Column
->>> from sqlalchemy import Integer, String
+## Uso de SqlAlchemy
 
->>> metadata = MetaData()
->>> user_table = Table('user', metadata,
-...                Column('id', Integer, primary_key=True),
-...                Column('name', String),
-...                Column('fullname', String)
+### Crear y usar tablas de una base de datos
 
+La estructura del esquema de una base de datos relacional se representa
+internamente en Python usando objetos como `MetaData`, `Table`, y otros:
 
-+------------------------------------------------------------------+
-| Table and MetaData objects can be used to generate a schema      |
-| in a database.                                                   |
-+------------------------------------------------------ (8 / 20) --+
+    >>> from sqlalchemy import MetaData
+    >>> from sqlalchemy import Table, Column
+    >>> from sqlalchemy import Integer, String
 
->>> from sqlalchemy import create_engine
->>> engine = create_engine("sqlite://")
->>> metadata.create_all(engine)
+    >>> metadata = MetaData()
+    >>> user_table = Table('user', metadata,
+    ...                Column('id', Integer, primary_key=True),
+    ...                Column('name', String),
+    ...                Column('fullname', String)
 
-------------------------------------------------------------------+
-| The Table object is at the core of the SQL expression            |
-| system - this is a quick preview of that.     
+Los objetos `MetaData` y `Table` se pueden usar para crear una tabla en un
+esquema:
 
+    >>> from sqlalchemy import create_engine
+    >>> engine = create_engine("sqlite://")
+    >>> metadata.create_all(engine)
 
->>> print(user_table.select())
-SELECT "user".id, "user".name, "user".fullname 
-FROM "user"
+El método `create_all` tiene la virtud de que antes de intentar crar una tabla,
+mira a ver si ya está creada, y en ese caso no hace nada.
 
-+------------------------------------------------------------------+
-| Types are represented using objects such as String, Integer,     |
-| DateTime.  These objects can be specified as "class keywords",   |
-| or can be instantiated with arguments.                           |
-+------------------------------------------------------ (9 / 20) --+
+El objeto `Table` es el nucleo del sistema de expresiones SQL; este es una
+muestra rápida de su uso: 
 
->>> from sqlalchemy import String, Numeric, DateTime, Enum
->>> fancy_table = Table('fancy', metadata,
-...                     Column('key', String(50), primary_key=True),
-...                     Column('timestamp', DateTime),
-...                     Column('amount', Numeric(10, 2)),
-...                     Column('type', Enum('a', 'b', 'c'))
-...                 )
->>> fancy_table.create(engine)
+    >>> print(user_table.select())
+    SELECT "user".id, "user".name, "user".fullname 
+    FROM "user"
 
-+------------------------------------------------------------------+
-| table metadata also allows for constraints and indexes.          |
-| ForeignKey is used to link one column to a remote primary        |
-| key.                                                             |
-+----------------------------------------------------- (10 / 20) --+
+Los tipos de datos de la base de datos se representan con objetos como
+`String`, `Integer`, `DateTime`, etc... Estos objetos se pueden especificar
+como "class keywords" (es decir, psasndo la clase como argumento) o como
+objetos ya instanciados con sus propios argumentos:
 
->>> from sqlalchemy import ForeignKey
->>> addresses_table = Table('address', metadata,
-...                     Column('id', Integer, primary_key=True),
-...                     Column('email_address', String(100), nullable=False),
-...                     Column('user_id', Integer, ForeignKey('user.id'))
-...                   
->>> addresses_table.create(engine)
+    >>> from sqlalchemy import String, Numeric, DateTime, Enum
+    >>> fancy_table = Table('fancy', metadata,
+    ...                     Column('key', String(50), primary_key=True),
+    ...                     Column('timestamp', DateTime),
+    ...                     Column('amount', Numeric(10, 2)),
+    ...                     Column('type', Enum('a', 'b', 'c'))
+    ...                 )
+    >>> fancy_table.create(engine)
 
-+------------------------------------------------------------------+
-| *** Reflection ***                                               |
-+------------------------------------------------------------------+
-| 'reflection' refers to loading Table objects based on            |
-| reading from an existing database.                               |
-+----------------------------------------------------- (14 / 20) --+
+También podemos especificar índices y *constraints*. La clase `ForeingKey` se
+usa para enlazar un campo de clave foranea con la tabla y clave primaria
+correspondiente:
 
->>> metadata2 = MetaData()
->>> user_reflected = Table('user', metadata2, autoload=True, autoload_with=engine)
-
-)+---------------------------------------------------------------------+
-| Information about a database at a more specific level is available  |
-| using the Inspector object.                                         |
-+-------------------------------------------------------- (16 / 20) --+
-
->>> from sqlalchemy import inspect
-
->>> inspector = inspect(engine)
->>> inspector.get_table_names()
->>> inspector.get_columns('address')
->>> inspector.get_foreign_keys('address')
+    >>> from sqlalchemy import ForeignKey
+    >>> addresses_table = Table('address', metadata,
+    ...                     Column('id', Integer, primary_key=True),
+    ...                     Column('email_address', String(100), nullable=False),
+    ...                     Column('user_id', Integer, ForeignKey('user.id'))
+    ...                   
+    >>> addresses_table.create(engine)
 
 
+### Reflection
 
+Podemos cargar la definición de una tabla directamente desde la base de datos,
+si la tabla ya existe, usando el parámetro `autoload`:
 
-+------------------------------------------------------------------+
-| we can insert data using the insert() construct                  |
-+----------------------------------------------------- (19 / 46) --+
+    >>> metadata2 = MetaData()
+    >>> user_reflected = Table('user', metadata2, autoload=True, autoload_with=engine)
 
->>> insert_stmt = user_table.insert().values(username='ed', fullname='Ed Jones')
->>> conn = engine.connect()
->>> result = conn.execute(insert_stmt)
+Si necesitamos más información, tanto de las tablas como de la base de datos en
+general, podemos usar el objeto `Inspector`:
 
-+------------------------------------------------------------------+
-| executing an insert() gives us the "last inserted id"            |
-+----------------------------------------------------- (20 / 46) --+
+    >>> from sqlalchemy import inspect
 
->>> result.inserted_primary_key
-[1]
+    >>> inspector = inspect(engine)
+    >>> inspector.get_table_names()
+    >>> inspector.get_columns('address')
+    >>> inspector.get_foreign_keys('address')
 
-+------------------------------------------------------------------+
-| insert() and other DML can run multiple parameters at once.      |
-+----------------------------------------------------- (21 / 46) --+
+Podemos insertar datos en la tabla usando el método `insert`, que genera
+automáticamente la sentencia SQL, adaptada al engine que estemos usando::
 
->>> conn.execute(user_table.insert(), [
-...     {'username': 'jack', 'fullname': 'Jack Burger'},
-...     {'username': 'wendy', 'fullname': 'Wendy Weathersmith'}
->>> ])
+    >>> insert_stmt = user_table.insert().values(username='ed', fullname='Ed Jones')
+    >>> conn = engine.connect()
+    >>> result = conn.execute(insert_stmt)
 
-+------------------------------------------------------------------+
-| select() is used to produce any SELECT statement.                |
-+----------------------------------------------------- (22 / 46) --+
+El resultado de ejecutar un insert incluye la clave primaria del último
+registro insertado. Si hemos insertado varios registros no es demasiado útil,
+pero sí cuando insertamos un único registro:
 
->>> from sqlalchemy import select
->>> select_stmt = select([user_table.c.username, user_table.c.fullname]).\
-...             where(user_table.c.username == 'ed')
->>> result = conn.execute(select_stmt)
->>> for row in result:
-...     print(row)
+    >>> result.inserted_primary_key
+    [1]
+
+Los métodos `insert` y otros que reflejan comandos de manipulación de datos
+(DML) pueden ejecutarse con múltiples parámetros, pasando una lista de
+diccionarios con los datos:
+
+    >>> conn.execute(user_table.insert(), [
+    ...     {'username': 'jack', 'fullname': 'Jack Burger'},
+    ...     {'username': 'wendy', 'fullname': 'Wendy Weathersmith'}
+    >>> ])
+
+El método `select` se puede usar para producir cualquier tipo de sentencia
+`SELECT`:
+
+    >>> from sqlalchemy import select
+    >>> select_stmt = select([user_table.c.username, user_table.c.fullname]).\
+    ...             where(user_table.c.username == 'ed')
+    >>> result = conn.execute(select_stmt)
+    >>> for row in result:
+    ...     print(row)
