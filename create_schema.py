@@ -11,11 +11,11 @@ import dba
 
 metadata = MetaData()
 cs = dba.get_connection_string()
-print(cs)
 engine = create_engine(dba.get_connection_string())
 
-User = Table('cp_user', metadata, autoload=True, autoload_with=engine)
-Group = Table('cp_group', metadata, autoload=True, autoload_with=engine)
+dba.Group.metadata.create_all(engine)
+
+metadata = dba.Group.metadata
 
 Message = Table('cp_message', metadata,
                 Column('id_message', Integer, primary_key=True),
@@ -49,4 +49,5 @@ Log = Table('cp_log', metadata,
 	Column('ts_output', DateTime(), default=None),
 	)
 
-metadata.create_all(engine)
+if __name__ == '__main__':
+    metadata.create_all(engine)

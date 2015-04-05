@@ -2,3 +2,5 @@
 *.pyc
 # Never track config.py
 config.py
+# Vim swap files
+*.swp
