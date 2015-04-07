@@ -4,3 +4,5 @@
 config.py
 # Vim swap files
 *.swp
+# Virtualenv dir
+.venv/*
