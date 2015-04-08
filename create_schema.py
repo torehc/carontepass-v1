@@ -11,7 +11,7 @@ import dba
 
 metadata = MetaData()
 cs = dba.get_connection_string()
-engine = create_engine(dba.get_connection_string())
+engine = create_engine(cs)
 
 dba.Group.metadata.create_all(engine)
 
