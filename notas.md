@@ -2,6 +2,27 @@
 
 ## Uso de SqlAlchemy
 
+Para usar un ORM, se suele empezar describiendo las tablas de la base
+de datos que vamos a usar, y luego definiendo nuestras propias clases, una
+para cada tabla, y mapearemos las clases con las tablas. En SQLAlchemy podemos
+realizar estas dos tareas a la vez, usando un sistema llamado (Declarative)
+[http://docs.sqlalchemy.org/en/rel_0_9/orm/extensions/declarative/index.html].
+Usando este sistema, creamos las clases incluyendo ciertas directivas que 
+describen la tabla del a la que está vincula la clase.
+
+Estas clases se definen en base a una clase que mantiene un catálogo 
+de las clases y tablas implicadas. Esta clase base se denomina
+**derivate base class**. Lo normal es que nuestra aplicación tenga solo
+una instancia de esta clase base, en un módulo de uso común. Para crear
+la clase base se llama a la función `declarative_base()`, como en este
+ejemplo:
+
+    >>> from sqlalchemy.ext.declarative import declarative_base
+    >>> Base = declarative_base()
+
+Ahora que ya tenemos nuestra "base", podemos definir cuantas clases 
+derivadas necesitemos, una para cada tabla.
+
 ### Crear y usar tablas de una base de datos
 
 La estructura del esquema de una base de datos relacional se representa
