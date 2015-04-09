@@ -7,11 +7,11 @@ from app import models
 @app.route('/')
 @app.route('/index')
 def index():
-    return 'Hola, mundo'
+    return render_template('inicio.html')
 
 @app.route('/users')
 def users():
-    return render_template('users.html', 
+    return render_template('users.html',
         title='Listado de usuarios',
         objects=models.User.query.all(),
         )
@@ -20,7 +20,7 @@ def users():
 def user_detail(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
-    return render_template('user_detail.html', 
+    return render_template('user_detail.html',
         title='{} {}'.format(user.name, user.last_name),
         object=user,
-        )   
+        )
