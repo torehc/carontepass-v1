@@ -1,5 +1,29 @@
 # Notas
 
+## Crear una base de datos con Postgresql
+
+Suponiendo que el servidor de PostgreSQL esté activo, nos conectamos
+con psql:
+
+    $ psql -U postgres --host localhost
+
+Creamos el usuario (Rol) con el que nos conectaremos:
+
+    CREATE ROLE carontepass WITH CREATEDB LOGIN PASSWORD 'carontepass';
+
+Creamos la base de datos con dueño el usuario anterior y le damos
+  al mismo los accesos `CREATE`, `CONNECT`, y `TEMPORARY` (`SELECT`, `INSERT`,
+  `UPDATE` y otros privilegios ya los tiene por ser el dueño de la base
+  de datos):
+
+    CREATE DATABASE carontepass
+       WITH ENCODING='UTF8'
+       OWNER=carontepass
+       CONNECTION LIMIT=-1;
+    GRANT ALL PRIVILEGES ON DATABASE carontepass TO carontepass;
+
+Salimos de `psql` con `\q` o `\quit`.
+
 ## Uso de SqlAlchemy
 
 Para usar un ORM, se suele empezar describiendo las tablas de la base
@@ -132,3 +156,29 @@ El método `select` se puede usar para producir cualquier tipo de sentencia
     >>> result = conn.execute(select_stmt)
     >>> for row in result:
     ...     print(row)
+
+## Uso de Flask-SqlAlchemy
+
+Flask-SqlAlchemy es una extension de Flask que simplifica trabajar con
+SqlAlchemy. No es estrictamente necesaria, pero proporciona ciertos
+valores por defecto y funciones comunes útiles.
+
+Para usarlo, configuramos la aplicacion Flask con la
+variable `SQLALCHEMY_DATABASE_URI` apuntando a la base de datos
+que queremos usar (en el formato de *connection string* usado por
+SqlAlchemy), y luego instanciamos un objeto de la clase 
+`flask.ext.sqlalchemy.SQLAlchemy`, pasándole como parámetro 
+la aplicación Flask:
+
+    from flask import Flask
+    from flask.ext.sqlalchemy import SQLAlchemy
+
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    db = SQLAlchemy(app)
+
+Una vez creado, el objeto contiene todas las funciones y utilidades de
+los módulos `sqlalchemy` y `sqlalchemy.orm`. Además, incluye una clase
+Model que es la clase derivada (*declarative base*) que usaremos
+para crear nuestros modelos.
+
