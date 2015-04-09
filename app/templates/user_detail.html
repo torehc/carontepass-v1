@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table class="table">
+<tr>
+    <th>id. user</th>
+    <td>{{ object.id_user }}</td>
+</tr>
+
+<tr>
+    <th>Nombre</th>
+    <td>{{ object.name }}</td>
+</tr>
+
+<tr>
+    <th>Apellidos</th>
+    <td>{{ object.last_name }}</td>
+</tr>
+
+<tr>
+    <th>Rol</th>
+    <td>{{ object.rol }}</td>
+</tr>
+
+<tr>
+    <th>Grupo</th>
+    <td>{{ object.group }}</td>
+</tr>
+<tr>
+    <th>Teléfono</th>
+    <td>{% if object.phone %}{{ object.phone }}{% else %}<i>N/A</i>{% endif %}</td>
+</tr>
+
+<tr>
+    <th>Dirección</th>
+    <td>{% if object.address %}{{ object.address }}{% else %}<i>N/A</i>{% endif %}</td>
+</tr>
+
+<tr>
+    <th>EMail</th>
+    <td>{{ object.email }}</td>
+</tr>
+
+
+</table>
+
+{% endblock %}

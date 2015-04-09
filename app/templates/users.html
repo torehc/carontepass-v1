@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<ul>
+{% for usr in objects %}
+    <li><a href="/users/{{ usr.id_user }}">{{ usr }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

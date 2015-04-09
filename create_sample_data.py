@@ -45,8 +45,10 @@ def main():
             name_group=fake.company(),
             url=fake.url(),
             )
+        db.session.add(grp)
         grupos.append(grp)
         print('    - {}'.format(grp))
+    db.session.commit()
     print(u'  - Creando Usuarios')   
     usuarios = []     
     for _ in range(23): # Usuarios 
@@ -57,8 +59,10 @@ def main():
             rol=random_distribute((95, 5), ('usr', 'adm')),
             group=random_distribute((70,10,10,70), grupos),
             )
-        print('    - {}'.format(usr))
+        db.session.add(grp)
         usuarios.append(usr)
+        print('    - {}'.format(usr))
+    db.session.commit()
     print(u'[OK]')
     print(u'  - Creando Dispositvivos')        
     for usr in usuarios: # Usuarios 
@@ -68,7 +72,9 @@ def main():
         else:
             code = fake_mac_address()
         dev = models.Device(user=usr, kind=kind, code=code)
+        db.session.add(dev)
         print('    - {}'.format(dev))
+    db.session.commit()
     print(u'[OK]')
 
 if __name__ == '__main__':

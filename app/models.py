@@ -52,7 +52,7 @@ class Device(db.Model):
     id_device = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('cp_user.id_user'))
     user = db.relationship('User', backref=db.backref('devices', lazy='dynamic'))
-    kind = db.Column(db.Enum('mac', 'rfc', name="device_kind"), nullable=False)
+    kind = db.Column(db.Enum('mac', 'nfc', name="device_kind"), nullable=False)
     code = db.Column(db.String(64), nullable=False)
 
     def __str__(self):
