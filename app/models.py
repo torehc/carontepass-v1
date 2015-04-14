@@ -27,6 +27,9 @@ class User(db.Model):
     def __str__(self):
         return '{}, {} ({})'.format(self.last_name, self.name, self.email)
 
+    def get_payment(self, month, year):
+        return Payment.query.filter_by(user=self, year=year, month=month).first()
+        
 class Message(db.Model):
     __tablename__ = 'cp_message'
 
@@ -43,6 +46,7 @@ class Payment(db.Model):
     year = db.Column(db.Integer)
     month = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('cp_user.id_user'))
+    user = db.relationship('User', backref=db.backref('payments', lazy='dynamic'))
     f_payment = db.Column(db.DateTime)
     amount = db.Column(db.Numeric(10, 2))
 
