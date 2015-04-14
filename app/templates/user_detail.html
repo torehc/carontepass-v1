@@ -38,9 +38,20 @@
 </tr>
 
 <tr>
-    <th>EMail</th>
+    <th>Email</th>
     <td>{{ object.email }}</td>
 </tr>
+
+<tr>
+    <th>Dispositivos</th>
+    <td>
+        <ul>
+        {% for device in object.devices %}
+            <li>{{ device }}</li>
+        {% endfor %}
+        </ul>
+    </td>
+
 
 
 </table>
