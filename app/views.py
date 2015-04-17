@@ -36,7 +36,7 @@ def user_detail(id_user):
         object=user,
         )
 
-@app.route('/users/<id_user>/edit')
+@app.route('/users/<id_user>/edit', methods=('GET', 'POST'))
 def user_edit(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
