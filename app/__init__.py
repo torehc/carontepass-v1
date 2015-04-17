@@ -14,6 +14,7 @@ def get_connection_string():
         )
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = config.SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = get_connection_string()
 db = SQLAlchemy(app)
 

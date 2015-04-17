@@ -13,6 +13,7 @@ from app.config import MAX_GRANTED_DAYS
 from flask import render_template
 from flask import jsonify
 from app import models
+from app import forms
 
 @app.route('/')
 @app.route('/index')
@@ -31,8 +32,19 @@ def user_detail(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
     return render_template('user_detail.html',
-        title='{} {}'.format(user.name, user.last_name),
+        title=u'{} {}'.format(user.name, user.last_name),
         object=user,
+        )
+
+@app.route('/users/<id_user>/edit')
+def user_edit(id_user):
+    id_user = int(id_user)
+    user = models.User.query.get(id_user)
+    form = forms.UserEditForm(obj=user)
+    return render_template('user_edit.html',
+        title=u'{} {}'.format(user.name, user.last_name),
+        object=user,
+        form = form
         )
 
 def _ok(result, **kwargs):
@@ -44,13 +56,13 @@ def _error(message, **kwargs):
     response = {'status': 'error', 'message': str(message)}
     response.update(kwargs)
     return jsonify(response)
-    
+
 @app.route('/api/1/device/<kind>/<code>/check')
 def check_device(kind, code):
     try:
         device = models.Device.query.filter_by(kind=kind, code=code).first()
         if not device:
-            return _ok(False, 
+            return _ok(False,
                 message='No existe el dispositivo [{}/{}]'.format(kind, code)
                 )
         user = device.user
@@ -67,7 +79,7 @@ def check_device(kind, code):
             month, year = (month-1, year) if month > 1 else (12, year-1)
             payment = user.get_payment(month, year)
             if payment:
-                return _ok(True, message=msg, id_user=user.id_user) 
+                return _ok(True, message=msg, id_user=user.id_user)
         # No day granted
         return _ok(False, message=msg, id_user=user.id_user)
     except Exception as err:
