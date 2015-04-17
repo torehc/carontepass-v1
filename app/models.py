@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from app import db
 
 class Group(db.Model):
@@ -25,11 +26,11 @@ class User(db.Model):
     email = db.Column(db.String(180))
 
     def __str__(self):
-        return '{}, {} ({})'.format(self.last_name, self.name, self.email)
+        return u'{}, {} ({})'.format(self.last_name, self.name, self.email)
 
     def get_payment(self, month, year):
         return Payment.query.filter_by(user=self, year=year, month=month).first()
-        
+
 class Message(db.Model):
     __tablename__ = 'cp_message'
 

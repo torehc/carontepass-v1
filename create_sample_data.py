@@ -47,21 +47,21 @@ def main():
             )
         db.session.add(grp)
         grupos.append(grp)
-        print('    - {}'.format(grp))
+        print(u'    - {}'.format(grp))
     db.session.commit()
     print(u'  - Creando Usuarios')   
     usuarios = []     
     for _ in range(23): # Usuarios 
         usr = models.User(
             name=fake.first_name(), 
-            last_name=fake.first_name(), 
+            last_name=fake.last_name(), 
             email=fake.email(),
             rol=random_distribute((95, 5), ('usr', 'adm')),
-            group=random_distribute((70,10,10,70), grupos),
+            group=random_distribute((70,10,10,10), grupos),
             )
         db.session.add(grp)
         usuarios.append(usr)
-        print('    - {}'.format(usr))
+        print(u'    - {}'.format(usr))
     db.session.commit()
     print(u'[OK]')
     print(u'  - Creando Dispositvivos')        
@@ -73,7 +73,7 @@ def main():
             code = fake_mac_address()
         dev = models.Device(user=usr, kind=kind, code=code)
         db.session.add(dev)
-        print('    - {}'.format(dev))
+        print(u'    - {}'.format(dev))
     db.session.commit()
     print(u'[OK]')
 
