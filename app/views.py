@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#flask!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # views.py
@@ -20,14 +20,14 @@ from app import forms
 def index():
     return render_template('inicio.html')
 
-@app.route('/users')
+@app.route('/users/')
 def users():
     return render_template('users.html',
         title='Listado de usuarios',
         objects=models.User.query.all(),
         )
 
-@app.route('/users/<id_user>')
+@app.route('/users/<id_user>/')
 def user_detail(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
@@ -46,6 +46,28 @@ def user_edit(id_user):
         object=user,
         form = form
         )
+
+#/
+## Grupos / Groups
+#/
+
+@app.route('/groups/')
+def groups():
+    return render_template('groups.html',
+        title='Listado de grupos',
+        objects=models.Group.query.all(),
+        )
+
+@app.route('/groups/<id_group>/')
+def group_detail(id_group):
+    id_group = int(id_group)
+    group = models.Group.query.get(id_group)
+    return render_template('group_detail.html',
+        title=group.name_group,
+        object=group,
+        )
+
+
 
 def _ok(result, **kwargs):
     response = {'status': 'ok', 'result': result}

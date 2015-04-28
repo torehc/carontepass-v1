@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table class="table">
+ <thead>
+  <tr>
+   <th>Nombre del Grupo</th>
+   <th>Web</th>
+   <th>Nº de miembros</th>
+  </tr>
+ </thead>
+ <tbody>
+{% for grp in objects %}
+  <tr>
+   <td>
+    <a class="btn btn-default" role="button" href="/groups/{{ grp.id_group }}">{{ grp.name_group }}</a>
+    </td>
+   <td>
+    {% if grp.url %}
+        <a href="{{ grp.url }}">
+            <spam class="glyphicon glyphicon-link"></spam>
+            {{ grp.url }}</a>
+    {% else %}
+        <span class="not_aplicable">N/A</span>
+    {% endif %}
+    </td>
+   <td><span clas="badge">{{ grp.users.count() }}</span></td>
+  </tr>
+{% endfor %}
+ </tbody> 
+</table>
+
+{% endblock %}

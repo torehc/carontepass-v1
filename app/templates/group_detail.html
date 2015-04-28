@@ -2,35 +2,34 @@
 
 {% block content %}
 
+<h3>{{ object.name_group }}</h3>
+{% if object.url %}
+    <h4><a href="{{ object.url }}">
+            <spam class="glyphicon glyphicon-link"></spam>
+            {{ object.url }}</a></h4>
+{% endif %}
+
 <table class="table">
+<caption>Miembros del grupo</caption>
  <thead>
   <tr>
    <th>Nº de socio</th>
    <th>Nombre</th>
    <th>Apellidos</th>
-   <th>Grupo</th>
   </tr>
  </thead>
  <tbody>
-{% for usr in objects %}
+{% for usr in object.users %}
   <tr>
    <td>
     <a class="btn btn-default" role="button" href="/users/{{ usr.id_user }}">{{ usr.id_user }}</a>
     </td>
    <td>{{ usr.name }}</td>
    <td>{{ usr.last_name }}</td>
-   <td>
-    {% if usr.group %}
-        <a class="btn btn-default" role="button" href="/groups/{{ usr.group_id }}/">
-        {{ usr.group }}
-        </a>
-    {% else %}
-        <span class="not_aplicable">N/A</span>
-    {% endif %}
-   </td>
   </tr>
 {% endfor %}
  </tbody> 
 </table>
+
 
 {% endblock %}
