@@ -21,7 +21,7 @@ class User(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('cp_group.id_group'))
     group = db.relationship('Group',
         backref=db.backref('users', lazy='dynamic'))
-    phone = db.Column(db.String(15))
+    phone = db.Column(db.String(18))
     address = db.Column(db.String(220))
     email = db.Column(db.String(180))
 
@@ -50,6 +50,15 @@ class Payment(db.Model):
     user = db.relationship('User', backref=db.backref('payments', lazy='dynamic'))
     f_payment = db.Column(db.DateTime)
     amount = db.Column(db.Numeric(10, 2))
+
+    def __str__(self):
+        return u'{} {}, pago {}/{} ({:.2f}€)'.format(
+            self.user.name, 
+            self.user.last_name,
+            self.month,
+            self.year,
+            self.amount,
+            )
 
 class Device(db.Model):
     __tablename__ = 'cp_device'

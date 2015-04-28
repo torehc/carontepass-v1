@@ -4,7 +4,9 @@
 from __future__ import print_function
 from __future__ import division
 
+import decimal
 import random
+import datetime
 
 from app import db
 from app import models
@@ -37,45 +39,91 @@ def random_distribute(probs, items):
 def main():
     fake = Factory.create('es_ES')
     fake.seed(1024)
-    print(u'Creando datos de ejemplo en la base de datos')
-    print(u'  - Creando Grupos')
+    print(u'Populate the database with sample data')
+    print(u'  - Creating groups')
     grupos = [None]
-    for _ in range(3): # Grupos
-        grp = models.Group(
-            name_group=fake.company(),
-            url=fake.url(),
-            )
-        db.session.add(grp)
-        grupos.append(grp)
-        print(u'    - {}'.format(grp))
-    db.session.commit()
-    print(u'  - Creando Usuarios')   
-    usuarios = []     
-    for _ in range(23): # Usuarios 
-        usr = models.User(
-            name=fake.first_name(), 
-            last_name=fake.last_name(), 
-            email=fake.email(),
-            rol=random_distribute((95, 5), ('usr', 'adm')),
-            group=random_distribute((70,10,10,10), grupos),
-            )
-        db.session.add(grp)
-        usuarios.append(usr)
-        print(u'    - {}'.format(usr))
-    db.session.commit()
-    print(u'[OK]')
-    print(u'  - Creando Dispositvivos')        
-    for usr in usuarios: # Usuarios 
-        kind = random_distribute((50, 50), ('nfc', 'mac'))
-        if kind == 'nfc':
-            code = fake_nfc_id()
+    for i in range(1, 4): # 3 Grupos
+        grp = models.Group.query.get(i)
+        if not grp:
+            grp = models.Group(
+                id_group=i,
+                name_group=fake.company(),
+                url=fake.url(),
+                )
+            print(u'    - {}'.format(grp), end=' ')
+            db.session.add(grp)
+            db.session.commit()
+            print(u'[OK]')
         else:
-            code = fake_mac_address()
-        dev = models.Device(user=usr, kind=kind, code=code)
-        db.session.add(dev)
-        print(u'    - {}'.format(dev))
-    db.session.commit()
-    print(u'[OK]')
+            print(u'    - {}'.format(grp), end=' ')
+            print(u'[Skipped]')
+        grupos.append(grp)
+    print(u'  - Creating users')   
+    users = []     
+    for i in range(1, 24): # Usuarios 
+        usr = models.User.query.get(i)
+        if not usr:
+            usr = models.User(
+                id_user=i,
+                name=fake.first_name(), 
+                last_name=fake.last_name(), 
+                email=fake.email(),
+                phone=fake.phone_number(),
+                address=fake.address(),
+                rol=random_distribute((95, 5), ('usr', 'adm')),
+                group=random_distribute((70,10,10,10), grupos),
+                )
+            print(u'    - {}'.format(usr), end=' ')
+            db.session.add(usr)
+            db.session.commit()
+            print(u'[OK]')
+        else:
+            print(u'    - {}'.format(usr), end=' ')
+            print(u'[skipped]')
+        users.append(usr)
+    print(u'  - Creating devices')
+    for usr in users: # Usuarios 
+        if not usr.devices:
+            kind = random_distribute((50, 50), ('nfc', 'mac'))
+            if kind == 'nfc':
+                code = fake_nfc_id()
+            else:
+                code = fake_mac_address()
+            dev = models.Device(user=usr, kind=kind, code=code)
+            print(u'    - {}'.format(dev), end=' ')
+            db.session.add(dev)
+            db.session.commit()
+            print(u'[OK]')
+        else:
+            dev = usr.devices[0]
+            print(u'    - {}'.format(dev), end=' ')
+            print(u'[Skipped]')
+    print(u'  - Creating payments for the current month')
+    today = datetime.date.today()
+    month, year = today.month, today.year      
+    for usr in users: # Usuarios 
+        pay = models.Payment.query.filter_by(
+            user=usr,
+            month=month,
+            year=year
+            ).first()
+        if not pay:
+            pay = models.Payment(
+                user=usr,
+                month=month,
+                year=year,
+                f_payment=fake.date_time_this_year(),
+                amount=decimal.Decimal('10.00'),
+                )
+            print(u'    - {}'.format(pay), end=' ')
+            db.session.add(pay)
+            db.session.commit()
+            print(u'[OK]')
+        else:
+            print(u'    - {}'.format(pay), end=' ')
+            print(u'[Skipped]')
+
+
 
 if __name__ == '__main__':
     main()

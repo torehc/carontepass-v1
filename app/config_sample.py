@@ -13,3 +13,7 @@ database = 'carontepass'
 # el mes actual, pero se ha pagado el anterior
 
 MAX_GRANTED_DAYS = 15
+
+# Secret_key is needed to keep the client-side sessions secure.
+
+SECRET_KEY = 'please change this'
