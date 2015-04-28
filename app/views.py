@@ -12,8 +12,11 @@ from app import app
 from app.config import MAX_GRANTED_DAYS
 from flask import render_template
 from flask import jsonify
+from flask import request
+
 from app import models
 from app import forms
+
 
 @app.route('/')
 @app.route('/index')
@@ -27,7 +30,7 @@ def users():
         objects=models.User.query.all(),
         )
 
-@app.route('/users/<id_user>/')
+@app.route('/users/<int:id_user>/')
 def user_detail(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
@@ -36,11 +39,17 @@ def user_detail(id_user):
         object=user,
         )
 
-@app.route('/users/<id_user>/edit', methods=('GET', 'POST'))
+@app.route('/users/<int:id_user>/edit/', methods=('GET', 'POST'))
 def user_edit(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
-    form = forms.UserEditForm(obj=user)
+    form = forms.UserEditForm(request.form, user)
+    print('request.method: "{}"'.format(request.method))
+    print('form.validate(): "{}"'.format(form.validate()))
+    if request.method == 'POST' and form.validate():
+        form.populate_obj(user)
+        user.save()
+        redirect('/')
     return render_template('user_edit.html',
         title=u'{} {}'.format(user.name, user.last_name),
         object=user,

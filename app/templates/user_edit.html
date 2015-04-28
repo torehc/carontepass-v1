@@ -1,47 +1,36 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
 
-<form method="POST" action="/">
+{% macro render_field(field) -%}
+  <dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{%- endmacro %}
+
+
+<form method="POST" action=".">
 {{ form.csrf_token }}
+<dl>
+    {{ render_field(form.name) }}
+    {{ render_field(form.last_name) }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.phone) }}
+    {{ render_field(form.rol) }}
+</dl>
+<input type="submit" class="btn btn-warning" 
+        name="ok"
+        value="Editar Perfil">
 
-
-<table class="table">
-
-<tr>
-    <th>Nombre</th>
-    <td>{{ form.name(size=30) }}</td>
-</tr>
-
-<tr>
-    <th>Apellidos</th>
-    <td>{{ form.last_name(size=30) }}</td>
-</tr>
-
-<tr>
-    <th>Email</th>
-    <td>{{ form.email(size=30) }}</td>
-</tr>
-
-<tr>
-    <th>Teléfono</th>
-    <td>{{ form.phone(size=12) }}</td>
-</tr>
-
-<tr>
-    <th>Rol</th>
-    <td>{{ form.rol() }}</td>
-</tr>
-
-
-
-
-</table>
-
-    <input type="submit" value="Go">
-    
 </form>
-
-<p><a class="btn btn-warning" href="/users/{{ object.id_user }}/edit">Editar Perfil</a>
 
 {% endblock %}
