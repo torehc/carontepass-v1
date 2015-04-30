@@ -13,6 +13,8 @@ from app.config import MAX_GRANTED_DAYS
 from flask import render_template
 from flask import jsonify
 from flask import request
+from flask import redirect
+from flask import url_for
 
 from app import models
 from app import forms
@@ -44,17 +46,23 @@ def user_edit(id_user):
     id_user = int(id_user)
     user = models.User.query.get(id_user)
     form = forms.UserEditForm(request.form, user)
+    print('user: "{}"'.format(user))
     print('request.method: "{}"'.format(request.method))
     print('form.validate(): "{}"'.format(form.validate()))
+    print('form.errors: "{}"'.format(form.errors))
     if request.method == 'POST' and form.validate():
         form.populate_obj(user)
-        user.save()
-        redirect('/')
-    return render_template('user_edit.html',
-        title=u'{} {}'.format(user.name, user.last_name),
-        object=user,
-        form = form
-        )
+        print('user (now): {}'.format(user))
+        from app import db
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('user_detail', id_user=id_user))
+    else:
+        return render_template('user_edit.html',
+            title=u'{} {}'.format(user.name, user.last_name),
+            object=user,
+            form = form,
+            )
 
 #/
 ## Grupos / Groups

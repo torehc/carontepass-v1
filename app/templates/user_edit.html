@@ -5,8 +5,9 @@
 {% block content %}
 
 {% macro render_field(field) -%}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
+<div class="form-group">
+  {{ field.label }}
+  {{ field(class_="form-control", **kwargs)|safe }}
   {% if field.errors %}
     <ul class=errors>
     {% for error in field.errors %}
@@ -14,7 +15,7 @@
     {% endfor %}
     </ul>
   {% endif %}
-  </dd>
+</div>
 {%- endmacro %}
 
 
@@ -26,6 +27,7 @@
     {{ render_field(form.email) }}
     {{ render_field(form.phone) }}
     {{ render_field(form.rol) }}
+    {{ render_field(form.address, col=70) }}
 </dl>
 <input type="submit" class="btn btn-warning" 
         name="ok"

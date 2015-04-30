@@ -182,3 +182,20 @@ los módulos `sqlalchemy` y `sqlalchemy.orm`. Además, incluye una clase
 Model que es la clase derivada (*declarative base*) que usaremos
 para crear nuestros modelos.
 
+# WTForms
+
+For compatibility with the maximum number of frameworks, we suggest you limit
+yourself to manipulating formdata in the following ways only:
+
+    Testing emptiness: if formdat
+
+    Checking for key existence: key in formdata
+
+    Iterating all keys: for key in formdata (note that some wrappers may return
+    multiple instances of the same key)
+    
+    Getting the list of values for a key: formdata.getlist(key).
+
+Most importantly, you should not use dictionary-style access to work with your
+formdata wrapper, because the behavior of this is highly variant on the wrapper:
+some return the first item, others return the last, and some may return a list.
