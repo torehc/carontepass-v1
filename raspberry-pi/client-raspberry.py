@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
-import httplib2
-import json
+import requests
 
 domain = "localhost:5000"
 
 kind = "nfc"
-tag = "x" #Dato recibido al leer tag NFC
+tag = "xxxxx" #Dato recibido al leer tag NFC
 
 url = "http://"+domain+"/api/1/device/"+kind+"/"+tag+"/check"
-
-h = httplib2.Http(".cache")
-(resp_headers, content) = h.request(url, "GET")
+r = requests.get(url)
 
 
 print url
-print(json.dumps(content))
-print ("----------------")
+print(r.json())
+print("----------------")
 
 
-parsed_json = json.loads(content)
+parsed_json = r.json()
 message = parsed_json['message']
 result = parsed_json['result']
 
