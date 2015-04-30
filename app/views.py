@@ -76,6 +76,16 @@ def group_detail(id_group):
         object=group,
         )
 
+#/
+## Pagos / Payments
+#/
+
+@app.route('/payment/all/')
+def payment_all():
+    return render_template('payment.html',
+        title='Listado de pagos',
+        objects=models.Payment.query.all(),
+        )
 
 
 def _ok(result, **kwargs):

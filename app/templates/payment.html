@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table class="table">
+ <thead>
+  <tr>
+   <th>ID de Pago</th>
+   <th>ID Usuario</th>
+   <th>Mes</th>
+   <th>Cantidad (€)</th>
+   <th>Fecha de Pago</th>
+  </tr>
+ </thead>
+ <tbody>
+{% for pay in objects %}
+  <tr>
+   <td>{{ pay.id_payment }}</td>
+   <td>{{ pay.user_id }}</td>
+   <td>{{ pay.month }}</td>
+   <td><b>{{ pay.amount }}</b></td>
+   <td>{{ pay.f_payment }}</td>
+  </tr>
+{% endfor %}
+ </tbody> 
+</table>
+
+{% endblock %}
