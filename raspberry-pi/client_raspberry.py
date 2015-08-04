@@ -1,18 +1,28 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-
+import os
 import requests
 import json
 import RPi.GPIO as GPIO
 from time import sleep
 import RPi.GPIO as GPIO
-import MFRC522
+from MFRC522 import MFRC522
 import signal
+import telebot
 
+import log
+import telegram
+
+    
+def voice(message):
+    
+    os.system('espeak -ves+f3 "{0}" >/dev/null'.format(message))
 
 
 def get_json(tag=''):
 
     domain = "localhost:5000"
+
     kind = "nfc"
     url = "http://"+domain+"/api/1/device/"+kind+"/"+tag+"/check"
 
@@ -24,11 +34,14 @@ def get_json(tag=''):
     
     
     parsed_json = r.json()
-    message = parsed_json['message']
+    user_id = parsed_json['id_user']
+    message = parsed_json['message']    
     result = parsed_json['result']
-
+    
     print(message)
-    return result
+    
+    return result, message, user_id
+
 
 def action(result):
     '''
@@ -38,12 +51,12 @@ def action(result):
     GPIO.setup(24, GPIO.OUT)
     
     if result:
-        print "Activar Relé"
+        print "Relay ON"
         GPIO.output(24, GPIO.LOW)
         sleep(1.5)
         GPIO.output(24, GPIO.HIGH)
     else:
-        print "NO Activar Relé"
+        print "Relay OFF"
 
 
 
@@ -90,9 +103,18 @@ if __name__ == '__main__':
             tag = '.'.join([str(x) for x in uid])
 
             # Query server with url
-            result = get_json(tag)
+            result, message, user_id = get_json(tag)
 
             # Activate relay
             action(result)
+                        
+            # Voice Synthesizer
+	    #voice(message)
 
+            # Send message by telegram
+            telegram.send_simple_msg(message)
+            
+            # Log user
+            log.log_user(user_id)
+            log.log_first()
 

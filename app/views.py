@@ -119,10 +119,10 @@ def check_device(kind, code):
         month, year = today.month, today.year # current month
         payment = user.get_payment(month, year)
         if payment:
-            return _ok(True, message=u'Bienvenido/a, {}'.format(user.name))
+            return _ok(True, id_user=user.id_user, message=u'Bienvenido/a, {}'.format(user.name))
 
         # No payment
-        msg = 'Pendiente abono {}/{}'.format(today.month, today.year)
+        msg = '{}: Pendiente abono {}/{}'.format(user.name, today.month, today.year)
         if today.day <= MAX_GRANTED_DAYS:
             # Previous month
             month, year = (month-1, year) if month > 1 else (12, year-1)

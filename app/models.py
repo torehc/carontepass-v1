@@ -25,6 +25,9 @@ class User(db.Model):
     address = db.Column(db.String(220))
     email = db.Column(db.String(180))
 
+    def full_name(self):
+        return '{} {}'.format(self.name, self.last_name)
+
     def __str__(self):
         return u'{}, {} ({})'.format(self.last_name, self.name, self.email)
 
@@ -76,6 +79,6 @@ class Log(db.Model):
     __tablename__ = 'cp_log'
 
     id_log = db.Column(db.Integer, primary_key=True)
-    device_id = db.Column(db.Integer, db.ForeignKey('cp_device.id_device'))
+    user_id = db.Column(db.Integer, db.ForeignKey('cp_user.id_user'))
     ts_input = db.Column(db.DateTime())
     ts_output = db.Column(db.DateTime(), default=None)
