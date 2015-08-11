@@ -3,23 +3,22 @@
 
 from time import sleep
 import telebot
+from config import TOKEN
+from config import IDchatAdmin
+from config import IDchatGroup
 
-TOKEN = '<TOKEN>'
 tb = telebot.TeleBot(TOKEN)
 
 
 def send_simple_msg(message):
-  
-    IDchatAdmin = 
-  
+    
     tb.send_message(IDchatAdmin, message)
   
   
 def send_group_msg(SiteOpen):
   
-    IDchatGroup = 
-    
     if SiteOpen == True:
-      tb.send_message(IDchatGroup, "Site Open")
+      tb.send_message(IDchatGroup, "Sitio Abierto")
     else:
-      tb.send_message(IDchatGroup, "Site Close")
+      tb.send_message(IDchatGroup, "Sitio Cerrado")
+   

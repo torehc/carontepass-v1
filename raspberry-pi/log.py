@@ -15,9 +15,9 @@ from app import db
 from app import models
 
 import telegram
+from config import database
 
-
-engine = create_engine('postgresql://')
+engine = create_engine(database)
 
 result = engine.execute('select * from cp_log') 
   

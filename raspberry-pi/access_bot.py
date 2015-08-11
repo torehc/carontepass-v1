@@ -7,32 +7,30 @@ import time
 import log
 
 import client_raspberry
+from config import TOKEN
+from config import IDchatAdmin
 
-
-TOKEN = '<TOKEN>' 
-
-IDchatAdmin =  #ID of person authorized to enter
 
 commands={ #command description used in the "help" command
 #'start': 'Get used to the bot', 
 'open': 'Open Door',
 'who': 'Who is in there?',
-'help': 'Gives you information about the available commands'
-#'users': 'Número de personas en el Sitio',
+'help': 'Gives you information about the available commands',
 }
             
 def listener(messages):
 
 	for m in messages:
 		chatid = m.chat.id
-		print chatid
-		if m.content_type == 'text':
-			print str(m.chat.first_name) + " [" + str(m.chat.id) + "]: " + m.text
+		print chatid + m.text
+		#if m.content_type == 'text':
+			#print str(m.chat.first_name) + " [" + str(m.chat.id) + "]: " + m.text
 
 
 
 bot = telebot.TeleBot(TOKEN)
 bot.set_update_listener(listener)
+
 
 
 try:
@@ -48,11 +46,10 @@ def open_door(m):
 	chatid = m.chat.id
 	
 	if chatid == IDchatAdmin:
-	    bot.send_message(chatid, 'Abriendo Puerta')
+	    bot.send_message(chatid, 'Opening Door')
 	    client_raspberry.action(True)
    	else:
-	    bot.send_message(chatid, 'Sin Acceso a Puerta')
-	    
+	    bot.send_message(chatid, 'No Access to Door')
 	   
 @bot.message_handler(commands=['who']) 
 def command_who(m):
@@ -62,7 +59,6 @@ def command_who(m):
 	  ', '.join([str(u.full_name()) for u in users])
 	  )
 	bot.send_message(chatid, msg) 
-	
 	    
 @bot.message_handler(commands=['help']) 
 def command_help(m):
