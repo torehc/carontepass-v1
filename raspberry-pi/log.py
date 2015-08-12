@@ -79,6 +79,10 @@ def log_user(user_id):
     else:
       log_in(user_id)
  
+
+def log_query_all():
+    return models.Log.query.filter_by(ts_output=None).all()
+
     
 def log_first():
   
