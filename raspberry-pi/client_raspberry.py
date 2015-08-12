@@ -115,6 +115,7 @@ if __name__ == '__main__':
             telegram.send_simple_msg(message)
             
             # Log user
+            last = log_query_all()
             log.log_user(user_id)
-            log.log_first()
+            log.log_first(last)
 
