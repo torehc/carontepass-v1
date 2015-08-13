@@ -119,7 +119,7 @@ def check_device(kind, code):
         month, year = today.month, today.year # current month
         payment = user.get_payment(month, year)
         if payment:
-            return _ok(True, id_user=user.id_user, message=u'Bienvenido/a, {}'.format(user.name))
+            return _ok(True, id_user=user.id_user, user_name=user.name, message=u'Bienvenido/a, {}'.format(user.name))
 
         # No payment
         msg = '{}: Pendiente abono {}/{}'.format(user.name, today.month, today.year)
@@ -128,9 +128,9 @@ def check_device(kind, code):
             month, year = (month-1, year) if month > 1 else (12, year-1)
             payment = user.get_payment(month, year)
             if payment:
-                return _ok(True, message=msg, id_user=user.id_user)
+                return _ok(True, user_name=user.name, message=msg, id_user=user.id_user)
         # No day granted
-        return _ok(False, message=msg, id_user=user.id_user)
+        return _ok(False, message=msg, id_user=user.id_user, user_name=user.name)
     except Exception as err:
         return _error(err)
 

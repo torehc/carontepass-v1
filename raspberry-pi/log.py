@@ -84,13 +84,13 @@ def log_query_all():
     return models.Log.query.filter_by(ts_output=None).all()
 
     
-def log_first(last_users):
+def log_first(last_users, user_name):
     last_users = last_users if last_users else []
     lose = models.Log.query.filter_by(ts_output=None).all()
     if len(lose) == 0 and len(last_users) == 1:
-      telegram.send_group_msg(False)
+      telegram.send_group_msg(False, user_name)
     elif len(lose) == 1 and len(last_users) == 0:
-      telegram.send_group_msg(True)
+      telegram.send_group_msg(True, user_name)
       
       
 def log_persons():

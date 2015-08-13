@@ -37,6 +37,7 @@ def get_json(tag=''):
     user_id = parsed_json['id_user']
     message = parsed_json['message']    
     result = parsed_json['result']
+    user_name = parsed_json['user_name']
     
     print(message)
     
@@ -117,5 +118,5 @@ if __name__ == '__main__':
             # Log user
             last = log.log_query_all()
             log.log_user(user_id)
-            log.log_first(last)
+            log.log_first(last, user_name)
 
