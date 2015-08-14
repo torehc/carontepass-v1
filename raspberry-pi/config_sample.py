@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#~ Global Config
+
+site_name =  #Site Name
+
 #~ Telegram Config
 
 TOKEN = '<TOKEN>'

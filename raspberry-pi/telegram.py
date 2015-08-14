@@ -18,7 +18,7 @@ def send_simple_msg(message):
 def send_group_msg(SiteOpen, user_name):
   
     if SiteOpen == True:
-      tb.send_message(IDchatGroup, "Sitio Abierto ("+user_name+")")
+      tb.send_message(IDchatGroup, site_name+" Open ("+user_name+")" )
     else:
-      tb.send_message(IDchatGroup, "Sitio Cerrado ("+user_name+")")
+      tb.send_message(IDchatGroup, site_name+" Closed ("+user_name+")" )
    
