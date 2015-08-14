@@ -114,8 +114,11 @@ def drop_users_in():
 	  newtime = r.ts_input + datetime.timedelta(0,2) #Add 2 seconds
 	  r.ts_output = newtime
 	  db.session.commit()
-          
-if sys.argv[1] == "drop_users_in":
-  drop_users_in()
+
+   
+if __name__ == "__main__":
+  
+  if sys.argv[1] == "drop_users_in":
+    drop_users_in()
    
 

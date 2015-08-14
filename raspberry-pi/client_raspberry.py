@@ -41,7 +41,7 @@ def get_json(tag=''):
     
     print(message)
     
-    return result, message, user_id
+    return result, message, user_id, user_name
 
 
 def action(result):
@@ -104,7 +104,7 @@ if __name__ == '__main__':
             tag = '.'.join([str(x) for x in uid])
 
             # Query server with url
-            result, message, user_id = get_json(tag)
+            result, message, user_id, user_name = get_json(tag)
 
             # Activate relay
             action(result)
